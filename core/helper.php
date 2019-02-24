@@ -205,7 +205,14 @@ class helper
 				);
 				$sql = 'INSERT INTO ' . $this->thanks_table . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
 				$this->db->sql_query($sql);
-
+                ///////////// DOCMOD ////////////////
+                $sql = 'UPDATE ' . USERS_TABLE . ' SET snp_thanks_n_given=snp_thanks_n_given+1 WHERE user_id=' . $from_id;
+                $this->db->sql_query($sql);
+                $sql = 'UPDATE ' . USERS_TABLE . ' SET snp_thanks_n_received=snp_thanks_n_received+1 WHERE user_id=' . $to_id;
+                $this->db->sql_query($sql);
+                /////////////////////////////////////
+                // 
+                /////////////////////////////////////
 				$lang_act = 'GIVE';
 				$thanks_data = array_merge($thanks_data, array(
 					'username' => $this->user->data['username'],
