@@ -275,8 +275,15 @@ class thanks extends \phpbb\notification\type\base
 		}
 		else
 		{
-			$thankers = array_merge(array(array('user_id' => $thanks_data['user_id'], 'ntimes' => 1)), isset($thanks_data['thankers']) ? $thanks_data['thankers'] : array());
+            $thankers = array_merge(array(array('user_id' => $thanks_data['user_id'], 'ntimes' => 1)), isset($thanks_data['thankers']) ? $thanks_data['thankers'] : array());
 		}
+        ///////////// DOCMOD ////////////////
+        // Somehow notification was keeping all thankers in the data
+        // column and eventually overflowing. Keep only 3.
+        $thankers = array_slice($thankers, 0, 3);
+        /////////////////////////////////////
+        // 
+        /////////////////////////////////////
 
 		$this->set_data('thankers', $thankers);
 
