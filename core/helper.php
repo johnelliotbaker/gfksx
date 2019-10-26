@@ -203,11 +203,17 @@ class helper
 					'forum_id' => (int) $row['forum_id'],
 					'thanks_time' => time(),
 				);
+                ///////////// DOCMOD ////////////////
+                $vars = [ 'from_id', 'to_id'];
+                extract($this->phpbb_dispatcher->trigger_event('gfksx.thanksforposts.insert_thanks_before', compact($vars)));
+                /////////////////////////////////////
+                // 
+                /////////////////////////////////////
 				$sql = 'INSERT INTO ' . $this->thanks_table . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
 				$this->db->sql_query($sql);
                 ///////////// DOCMOD ////////////////
-                $vars = [ 'from_id', 'to_id', ];
-                extract($this->phpbb_dispatcher->trigger_event('gfksx.thanksforposts.insert_thanks_before', compact($vars)));
+                $vars = [ 'from_id', 'to_id'];
+                extract($this->phpbb_dispatcher->trigger_event('gfksx.thanksforposts.insert_thanks_after', compact($vars)));
                 /////////////////////////////////////
                 // 
                 /////////////////////////////////////
