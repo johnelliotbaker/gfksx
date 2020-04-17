@@ -38,6 +38,7 @@ services:
             - '%tables.users%'
             - '%tables.posts%'
             - '%tables.notifications%'
+            - '@jeb.snahp.thanks_user.ThanksUser'
     gfksx.ThanksForPosts.controller.thankslist:
         class: gfksx\ThanksForPosts\controller\thankslist
         arguments:

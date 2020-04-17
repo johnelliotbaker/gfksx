@@ -82,6 +82,7 @@ class helper
 
     /** @var string NOTIFICATIONS_TABLE */
     protected $notifications_table;
+    protected $ThanksUser;
 
     /**
      * Constructor
@@ -105,8 +106,26 @@ class helper
      * @param string                               $notifications_table   NOTIFICATIONS_TABLE
      * @access public
      */
-    public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbb\auth\auth $auth, \phpbb\template\template $template, \phpbb\user $user, \phpbb\cache\driver\driver_interface $cache, \phpbb\request\request_interface $request, \phpbb\notification\manager $notification_manager, \phpbb\controller\helper $controller_helper, \phpbb\event\dispatcher_interface $phpbb_dispatcher, $phpbb_root_path, $php_ext, $table_prefix, $thanks_table, $users_table, $posts_table, $notifications_table)
-    {
+    public function __construct(
+        \phpbb\config\config $config,
+        \phpbb\db\driver\driver_interface $db,
+        \phpbb\auth\auth $auth,
+        \phpbb\template\template $template,
+        \phpbb\user $user,
+        \phpbb\cache\driver\driver_interface $cache,
+        \phpbb\request\request_interface $request,
+        \phpbb\notification\manager $notification_manager,
+        \phpbb\controller\helper $controller_helper,
+        \phpbb\event\dispatcher_interface $phpbb_dispatcher,
+        $phpbb_root_path,
+        $php_ext,
+        $table_prefix,
+        $thanks_table,
+        $users_table,
+        $posts_table,
+        $notifications_table,
+        $ThanksUser
+    ) {
         $this->config = $config;
         $this->db = $db;
         $this->auth = $auth;
@@ -125,6 +144,7 @@ class helper
         $this->users_table = $users_table;
         $this->posts_table = $posts_table;
         $this->notifications_table = $notifications_table;
+        $this->ThanksUser = $ThanksUser;
     }
 
     // Output thanks list
@@ -544,14 +564,30 @@ class helper
 
             // If url is not false, set the url under avatar
             if ($u_receive_count_url) {
-                $postrow = array_merge($postrow, $thanks_text, array( 'POSTER_RECEIVE_COUNT_LINK' => $u_receive_count_url));
+                $postrow = array_merge(
+                    $postrow,
+                    $thanks_text,
+                    ['POSTER_RECEIVE_COUNT_LINK' => $u_receive_count_url]
+                );
             }
             if ($u_give_count_url) {
-                $postrow = array_merge($postrow, $thanks_text, array( 'POSTER_GIVE_COUNT_LINK' => $u_give_count_url,));
+                $postrow = array_merge(
+                    $postrow,
+                    $thanks_text,
+                    ['POSTER_GIVE_COUNT_LINK' => $u_give_count_url,]
+                );
             }
+            $canGiveThanks = $this->ThanksUser->canGiveThanks(
+                $this->user->data['user_id']
+            );
+            $nextAvailableTime = $this->ThanksUser->getNextAvailableTimeAsFormattedTime();
             // END DOCMOD
 
             $postrow = array_merge($postrow, $thanks_text, array(
+                // DOCMOD
+                'CAN_GIVE_THANKS' => $canGiveThanks,
+                'NEXT_AVAILABLE_THANKS_TIME' => $nextAvailableTime,
+                // END DOCMOD
                 'COND' => ($already_thanked) ? true : false,
                 'THANKS' => $this->get_thanks($row['post_id']),
                 'THANK_MODE' => $thank_mode,
