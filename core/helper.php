@@ -204,7 +204,8 @@ class helper
 					'thanks_time' => time(),
 				);
                 ///////////// DOCMOD ////////////////
-                $vars = [ 'from_id', 'to_id'];
+                $topic_id = (int) $row['topic_id'];
+                $vars = [ 'from_id', 'to_id', 'topic_id'];
                 extract($this->phpbb_dispatcher->trigger_event('gfksx.thanksforposts.insert_thanks_before', compact($vars)));
                 /////////////////////////////////////
                 // 
@@ -212,7 +213,7 @@ class helper
 				$sql = 'INSERT INTO ' . $this->thanks_table . ' ' . $this->db->sql_build_array('INSERT', $thanks_data);
 				$this->db->sql_query($sql);
                 ///////////// DOCMOD ////////////////
-                $vars = [ 'from_id', 'to_id'];
+                $vars = [ 'from_id', 'to_id', 'topic_id'];
                 extract($this->phpbb_dispatcher->trigger_event('gfksx.thanksforposts.insert_thanks_after', compact($vars)));
                 /////////////////////////////////////
                 // 
